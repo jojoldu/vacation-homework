@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint \"src/**/*.ts\" --fix",
-    "build": "tsc --build",
-    "clean": "tsc --build --clean",
+    "build": "tsc --build --clean & tsc --build ",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "start": "node dist/app.js",
     "test": "yarn test",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
