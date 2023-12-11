@@ -1,14 +1,11 @@
-import * as readline from 'node:readline/promises';
-import { stdin as input, stdout as output } from 'node:process';
-
-const rl = readline.createInterface({ input, output });
+import { closeQuestion, question } from './utils/CommandLine';
 
 void (async () => {
-  const answer = await rl.question('Enter your name: ');
+  const answer = await question('Enter your name: ');
 
   console.log(`Hello, ${answer}!`);
 
-  rl.close();
+  closeQuestion();
 })();
 
 
