@@ -13,9 +13,17 @@ export class Game {
     private readonly dealer?: Player,
     private readonly gameView?: GameView,
   ) {}
+  private terminate() {
+    this.gameView.printTerminateMessage();
+    process.exit(0);
+  }
+
+  async restart() {
+    return await this.start();
+  }
+
   async start() {
     this.gameView.printGameRule();
-
     this.deck.shuffle();
 
     Array(2)
@@ -47,6 +55,13 @@ export class Game {
     }
 
     this.judgeWinner();
+
+    if (await this.gameView.printRestartPrompt()) {
+      await this.restart();
+      return;
+    }
+
+    this.terminate();
   }
 
   private judgeWinner() {

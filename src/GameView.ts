@@ -55,6 +55,7 @@ export class GameView {
     }
 
     console.log(`winner is ${winner}`);
+    console.log('=======================================================');
   }
 
   async shouldDrawCardPrompt(cards: Card[]) {
@@ -62,6 +63,15 @@ export class GameView {
 
     const response = await question(`카드를 더 받으시겠습니까? (y/n)`);
     return response.toLowerCase() === 'y';
+  }
+
+  async printRestartPrompt() {
+    const response = await question(`게임을 새로 시작하시겠습니까? (y/n)`);
+    return response.toLowerCase() === 'y';
+  }
+
+  printTerminateMessage() {
+    console.log('게임을 종료합니다.');
   }
 
   private getPlayerCards(cards: Card[]) {
