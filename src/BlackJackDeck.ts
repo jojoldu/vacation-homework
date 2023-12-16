@@ -19,6 +19,11 @@ export class BlackJackDeck implements Deck {
     this.shuffle();
   }
 
+  /**
+   * TODO:
+   * BlackJackCard 의존성을 없애기 위해선 외부에서 받아야 하는데 (register 의 useFactory 를 이용해서 주입)
+   * 여기선 굳이 해줄 필요성을 못느껴서 해주지 않음. 이게 맞는 건지?
+   */
   private generate() {
     const cardTypes: CardType[] = ['heart', 'diamond', 'club', 'spade'];
     const cardRanks: CardRank[] = [
