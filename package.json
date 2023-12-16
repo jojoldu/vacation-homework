@@ -8,6 +8,7 @@
     "build": "tsc --build --clean & tsc --build ",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "node dist/app.js",
+    "dev": "ts-node src/app.ts",
     "test": "yarn test",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
@@ -17,9 +18,9 @@
   "keywords": [],
   "author": "",
   "license": "MIT",
-
   "dependencies": {
-    "reflect-metadata": "^0.1.13"
+    "reflect-metadata": "^0.1.13",
+    "tsyringe": "^4.8.0"
   },
   "devDependencies": {
     "@swc-node/jest": "^1.6.8",
@@ -37,7 +38,7 @@
     "prettier": "^3.0.0",
     "source-map-support": "^0.5.21",
     "ts-loader": "^9.4.3",
-    "ts-node": "^10.9.1",
+    "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.1.3"
   },
