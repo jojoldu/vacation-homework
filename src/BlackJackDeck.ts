@@ -1,6 +1,11 @@
-import { Card, CardType, CardRank } from './Card';
+import { BlackJackCard, Card, CardRank, CardType } from './BlackJackCard';
 
-export class Deck {
+export interface Deck {
+  shuffle(): void;
+  pop(): Card;
+}
+
+export class BlackJackDeck implements Deck {
   private readonly cards: Card[] = [];
 
   constructor() {
@@ -23,7 +28,7 @@ export class Deck {
 
     cardTypes.forEach((cardType) => {
       cardRanks.forEach((cardRank) => {
-        this.cards.push(new Card(cardType, cardRank));
+        this.cards.push(new BlackJackCard(cardType, cardRank));
       });
     });
   }

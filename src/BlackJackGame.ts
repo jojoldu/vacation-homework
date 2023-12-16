@@ -1,17 +1,17 @@
-import { autoInjectable } from 'tsyringe';
-import { Deck } from './Deck';
-import { Player } from './Player';
-import { GameView } from './GameView';
+import { inject, injectable } from 'tsyringe';
+import { Deck } from './BlackJackDeck';
+import { Player } from './BlackJackPlayer';
+import { GameView } from './BlackJackView';
 
-@autoInjectable()
-export class Game {
+@injectable()
+export class BlackJackGame {
   private isDealerDraw: boolean = false;
 
   constructor(
-    private readonly deck?: Deck,
-    private readonly gamer?: Player,
-    private readonly dealer?: Player,
-    private readonly gameView?: GameView,
+    @inject('BlackJackDeck') private readonly deck: Deck,
+    @inject('BlackJackPlayer') private readonly gamer: Player,
+    @inject('BlackJackPlayer') private readonly dealer: Player,
+    @inject('BlackJackView') private readonly gameView: GameView,
   ) {}
   private terminate() {
     this.gameView.printTerminateMessage();
