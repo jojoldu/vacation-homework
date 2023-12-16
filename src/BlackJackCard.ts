@@ -52,7 +52,11 @@ export class BlackJackCard implements Card {
   }
 
   setScore(currentScore?: number) {
-    if (this.isAce && currentScore) {
+    if (
+      this.isAce &&
+      typeof currentScore === 'number' &&
+      !Number.isNaN(currentScore)
+    ) {
       this.aceScore = this.getAceScore(currentScore);
     }
   }
