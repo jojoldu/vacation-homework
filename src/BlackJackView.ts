@@ -1,7 +1,22 @@
+import { BlackJackCard, Card } from './BlackJackCard';
 import { question } from './utils/CommandLine';
-import { Card } from './Card';
 
-export class GameView {
+export interface GameView {
+  printGameRule(): void;
+  printDealerStatus(isDealerDraw: boolean): void;
+  printWinner(
+    winner: 'gamer' | 'dealer' | 'draw',
+    gamerScore: number,
+    dealerScore: number,
+    gamerCards: Card[],
+    dealerCards: Card[],
+  ): void;
+  shouldDrawCardPrompt(cards: Card[]): Promise<boolean>;
+  printRestartPrompt(): Promise<boolean>;
+  printTerminateMessage(): void;
+}
+
+export class BlackJackView implements GameView {
   printGameRule() {
     console.log('=======================================================');
     console.log('Game Start');
@@ -37,8 +52,8 @@ export class GameView {
     winner: 'gamer' | 'dealer' | 'draw',
     gamerScore: number,
     dealerScore: number,
-    gamerCards: Card[],
-    dealerCards: Card[],
+    gamerCards: BlackJackCard[],
+    dealerCards: BlackJackCard[],
   ) {
     console.log('Game Over');
     console.log('=======================================================');
@@ -58,7 +73,7 @@ export class GameView {
     console.log('=======================================================');
   }
 
-  async shouldDrawCardPrompt(cards: Card[]) {
+  async shouldDrawCardPrompt(cards: BlackJackCard[]) {
     console.log(`현재 사용자의 카드는 ${this.getPlayerCards(cards)} 입니다.`);
 
     const response = await question(`카드를 더 받으시겠습니까? (y/n)`);
@@ -74,7 +89,7 @@ export class GameView {
     console.log('게임을 종료합니다.');
   }
 
-  private getPlayerCards(cards: Card[]) {
+  private getPlayerCards(cards: BlackJackCard[]) {
     return cards
       .map((card) => `${card.type}${card.rank}(${card.score()}점)`)
       .join(', ');

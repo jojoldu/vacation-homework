@@ -14,7 +14,13 @@ export type CardRank =
   | 'K'
   | 'A';
 
-export class Card {
+export interface Card {
+  type: CardType;
+  rank: CardRank;
+  score(currentScore?: number): number;
+}
+
+export class BlackJackCard implements Card {
   private aceScore: number = 0;
 
   constructor(
@@ -30,7 +36,8 @@ export class Card {
     return this._rank;
   }
 
-  get isAce() {
+  // TODO: isAce 가 Player 에서 사용되고 있었는데 나중에 Card 클래스가 변경되면 없어질 수도 있으므로 private 으로 변경함. 근데 맞는진 잘 모르겠음.
+  private get isAce() {
     return this._rank === 'A';
   }
 
