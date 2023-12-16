@@ -18,52 +18,11 @@ export class BlackJackGame {
     process.exit(0);
   }
 
-  async restart() {
+  private async restart() {
     return await this.start();
   }
 
-  async start() {
-    this.gameView.printGameRule();
-
-    this.deck.init();
-    this.gamer.init();
-    this.dealer.init();
-
-    Array(2)
-      .fill(0)
-      .forEach(() => {
-        this.gamer.draw(this.deck.pop());
-        this.dealer.draw(this.deck.pop());
-      });
-
-    if (this.dealer.score <= 16) {
-      this.dealer.draw(this.deck.pop());
-      this.isDealerDraw = true;
-
-      if (this.dealer.score > 21) {
-        this.judgeWinner();
-
-        if (await this.gameView.printRestartPrompt()) {
-          await this.restart();
-          return;
-        }
-
-        this.terminate();
-
-        return;
-      }
-    }
-
-    this.gameView.printDealerStatus(this.isDealerDraw);
-
-    while (await this.gameView.shouldDrawCardPrompt(this.gamer.cards)) {
-      this.gamer.draw(this.deck.pop());
-
-      if (this.gamer.score > 21) {
-        break;
-      }
-    }
-
+  private async end() {
     this.judgeWinner();
 
     if (await this.gameView.printRestartPrompt()) {
@@ -126,5 +85,43 @@ export class BlackJackGame {
       this.gamer.cards,
       this.dealer.cards,
     );
+  }
+
+  async start() {
+    this.gameView.printGameRule();
+
+    this.deck.init();
+    this.gamer.init();
+    this.dealer.init();
+
+    Array(2)
+      .fill(0)
+      .forEach(() => {
+        this.gamer.draw(this.deck.pop());
+        this.dealer.draw(this.deck.pop());
+      });
+
+    if (this.dealer.score <= 16) {
+      this.dealer.draw(this.deck.pop());
+      this.isDealerDraw = true;
+
+      if (this.dealer.score > 21) {
+        await this.end();
+
+        return;
+      }
+    }
+
+    this.gameView.printDealerStatus(this.isDealerDraw);
+
+    while (await this.gameView.shouldDrawCardPrompt(this.gamer.cards)) {
+      this.gamer.draw(this.deck.pop());
+
+      if (this.gamer.score > 21) {
+        break;
+      }
+    }
+
+    await this.end();
   }
 }
