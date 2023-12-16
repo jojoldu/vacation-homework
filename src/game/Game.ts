@@ -8,10 +8,6 @@ export async function init(readLine: IReadLine) {
   closeQuestion();
 }
 
-export function play(readLine: IReadLine) {
+export function play(readLine: IReadLine) {}
 
-}
-
-export function end(readLine: IReadLine) {
-
-}
+export function end(readLine: IReadLine) {}
