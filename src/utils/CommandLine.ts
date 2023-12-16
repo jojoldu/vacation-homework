@@ -8,12 +8,12 @@ export interface IReadLine {
 
 const commandLine = readline.createInterface({ input, output });
 
-export async function question(str: string, rl? : IReadLine) {
+export async function question(str: string, rl?: IReadLine) {
   const inputReader = rl ?? commandLine;
   return inputReader.question(str);
 }
 
-export function closeQuestion(rl? : IReadLine) {
+export function closeQuestion(rl?: IReadLine) {
   const inputReader = rl ?? commandLine;
   return inputReader.close();
 }
