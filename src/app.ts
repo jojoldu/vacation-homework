@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { autoInjectable } from 'tsyringe';
+import { autoInjectable, inject } from 'tsyringe';
 import { question } from './utils/CommandLine';
 
 type CardType = 'heart' | 'diamond' | 'club' | 'spade';
@@ -82,19 +82,7 @@ class Deck {
   }
 }
 
-class Gamer {
-  cards: Card[] = [];
-
-  draw(card: Card) {
-    this.cards.push(card);
-  }
-
-  get score() {
-    return this.cards.reduce((acc, card) => acc + card.score, 0);
-  }
-}
-
-class Dealer {
+class Player {
   cards: Card[] = [];
 
   draw(card: Card) {
@@ -112,8 +100,8 @@ class Game {
 
   constructor(
     private readonly deck?: Deck,
-    private readonly gamer?: Gamer,
-    private readonly dealer?: Dealer,
+    private readonly gamer?: Player,
+    private readonly dealer?: Player,
   ) {}
   async start() {
     this.deck.shuffle();
