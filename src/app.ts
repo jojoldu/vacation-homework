@@ -1,13 +1,14 @@
-import { closeQuestion, question } from './utils/CommandLine';
+import 'reflect-metadata';
 
 void (async () => {
-  const answer = await question('Enter your name: ');
+  /**
+   * Controller 코드
+   */
+  const card = new Card();
+  const deck = new Deck(card);
+  const gamer = new Gamer();
+  const dealer = new Dealer();
+  const game = new Game(deck, gamer, dealer);
 
-  console.log(`Hello, ${answer}!`);
-
-  closeQuestion();
+  game.start();
 })();
-
-
-
-
