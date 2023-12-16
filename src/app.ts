@@ -128,56 +128,8 @@ class Player {
   }
 }
 
-@autoInjectable()
-class Game {
-  private isDealerDraw: boolean = false;
-
-  constructor(
-    private readonly deck?: Deck,
-    private readonly gamer?: Player,
-    private readonly dealer?: Player,
-  ) {}
-  async start() {
-    this.printGameRule();
-
-    this.deck.shuffle();
-
-    Array(2)
-      .fill(0)
-      .forEach(() => {
-        this.gamer.draw(this.deck.pop());
-        this.dealer.draw(this.deck.pop());
-      });
-
-    if (this.dealer.score <= 16) {
-      this.dealer.draw(this.deck.pop());
-      this.isDealerDraw = true;
-
-      if (this.dealer.score > 21) {
-        this.judgeWinner();
-
-        return;
-      }
-    }
-
-    console.log(
-      this.isDealerDraw
-        ? 'dealer 가 카드를 더 받았습니다(16점 이하).'
-        : 'dealer 가 카드를 더 받지 않았습니다(17점 이상).',
-    );
-
-    while (await this.shouldDrawCardPrompt()) {
-      this.gamer.draw(this.deck.pop());
-
-      if (this.gamer.score > 21) {
-        break;
-      }
-    }
-
-    this.judgeWinner();
-  }
-
-  private printGameRule() {
+class GameView {
+  printGameRule() {
     console.log('=======================================================');
     console.log('Game Start');
 
@@ -200,30 +152,28 @@ class Game {
     console.log('=======================================================');
   }
 
-  private getPlayerCards(cards: Card[]) {
-    return cards
-      .map((card) => `${card.type}${card.rank}(${card.score()}점)`)
-      .join(', ');
-  }
-
-  private async shouldDrawCardPrompt(): Promise<boolean> {
+  printDealerStatus(isDealerDraw: boolean) {
     console.log(
-      `현재 사용자의 카드는 ${this.getPlayerCards(this.gamer.cards)} 입니다.`,
+      isDealerDraw
+        ? 'dealer 가 카드를 더 받았습니다(16점 이하).'
+        : 'dealer 가 카드를 더 받지 않았습니다(17점 이상).',
     );
-
-    const response = await question(`카드를 더 받으시겠습니까? (y/n)`);
-    return response.toLowerCase() === 'y';
   }
 
-  private printWinner(winner: 'gamer' | 'dealer' | 'draw') {
-    console.log('=======================================================');
+  printWinner(
+    winner: 'gamer' | 'dealer' | 'draw',
+    gamerScore: number,
+    dealerScore: number,
+    gamerCards: Card[],
+    dealerCards: Card[],
+  ) {
     console.log('Game Over');
     console.log('=======================================================');
-    console.log(`gamer's score is ${this.gamer.score}점`);
-    console.log(`gamer's card is ${this.getPlayerCards(this.gamer.cards)}`);
+    console.log(`gamer's score is ${gamerScore}점`);
+    console.log(`gamer's card is ${this.getPlayerCards(gamerCards)}`);
     console.log('=======================================================');
-    console.log(`dealer's score is ${this.dealer.score}점`);
-    console.log(`dealer's card is ${this.getPlayerCards(this.dealer.cards)}`);
+    console.log(`dealer's score is ${dealerScore}점`);
+    console.log(`dealer's card is ${this.getPlayerCards(dealerCards)}`);
     console.log('=======================================================');
 
     if (winner === 'draw') {
@@ -234,28 +184,118 @@ class Game {
     console.log(`winner is ${winner}`);
   }
 
+  async shouldDrawCardPrompt(cards: Card[]) {
+    console.log(`현재 사용자의 카드는 ${this.getPlayerCards(cards)} 입니다.`);
+
+    const response = await question(`카드를 더 받으시겠습니까? (y/n)`);
+    return response.toLowerCase() === 'y';
+  }
+
+  private getPlayerCards(cards: Card[]) {
+    return cards
+      .map((card) => `${card.type}${card.rank}(${card.score()}점)`)
+      .join(', ');
+  }
+}
+
+@autoInjectable()
+class Game {
+  private isDealerDraw: boolean = false;
+
+  constructor(
+    private readonly deck?: Deck,
+    private readonly gamer?: Player,
+    private readonly dealer?: Player,
+    private readonly gameView?: GameView,
+  ) {}
+  async start() {
+    this.gameView.printGameRule();
+
+    this.deck.shuffle();
+
+    Array(2)
+      .fill(0)
+      .forEach(() => {
+        this.gamer.draw(this.deck.pop());
+        this.dealer.draw(this.deck.pop());
+      });
+
+    if (this.dealer.score <= 16) {
+      this.dealer.draw(this.deck.pop());
+      this.isDealerDraw = true;
+
+      if (this.dealer.score > 21) {
+        this.judgeWinner();
+
+        return;
+      }
+    }
+
+    this.gameView.printDealerStatus(this.isDealerDraw);
+
+    while (await this.gameView.shouldDrawCardPrompt(this.gamer.cards)) {
+      this.gamer.draw(this.deck.pop());
+
+      if (this.gamer.score > 21) {
+        break;
+      }
+    }
+
+    this.judgeWinner();
+  }
+
   private judgeWinner() {
     if (this.gamer.score > 21) {
-      this.printWinner('dealer');
+      this.gameView.printWinner(
+        'dealer',
+        this.gamer.score,
+        this.dealer.score,
+        this.gamer.cards,
+        this.dealer.cards,
+      );
       return;
     }
 
     if (this.dealer.score > 21) {
-      this.printWinner('gamer');
+      this.gameView.printWinner(
+        'gamer',
+        this.gamer.score,
+        this.dealer.score,
+        this.gamer.cards,
+        this.dealer.cards,
+      );
       return;
     }
 
     if (this.gamer.score === this.dealer.score) {
-      this.printWinner('draw');
+      this.gameView.printWinner(
+        'draw',
+        this.gamer.score,
+        this.dealer.score,
+        this.gamer.cards,
+        this.dealer.cards,
+      );
       return;
     }
 
     if (this.gamer.score > this.dealer.score) {
-      this.printWinner('gamer');
+      this.gameView.printWinner(
+        'gamer',
+        this.gamer.score,
+        this.dealer.score,
+        this.gamer.cards,
+        this.dealer.cards,
+      );
       return;
     }
 
-    this.printWinner('dealer');
+    this.gameView.printWinner(
+      'dealer',
+      this.gamer.score,
+      this.dealer.score,
+      this.gamer.cards,
+      this.dealer.cards,
+    );
   }
 }
 
