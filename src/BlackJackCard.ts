@@ -17,7 +17,8 @@ export type CardRank =
 export interface Card {
   type: CardType;
   rank: CardRank;
-  score(currentScore?: number): number;
+  score: number;
+  setScore: (currentScore?: number) => void;
 }
 
 export class BlackJackCard implements Card {
@@ -37,6 +38,7 @@ export class BlackJackCard implements Card {
   }
 
   // TODO: isAce 가 Player 에서 사용되고 있었는데 나중에 Card 클래스가 변경되면 없어질 수도 있으므로 private 으로 변경함. 근데 맞는진 잘 모르겠음.
+  // 내가 생각한 답변: isAce 가 외부에서 사용되는 건 Card 의 관심사가 외부에 있다는 것을 의미함. isAce 를 사용하는 케이스는 내부에서만 존재해야 할 것 같음.
   private get isAce() {
     return this._rank === 'A';
   }
@@ -49,17 +51,22 @@ export class BlackJackCard implements Card {
     return 11;
   }
 
-  score(currentScore?: number) {
+  setScore(currentScore?: number) {
+    if (this.isAce && currentScore) {
+      this.aceScore = this.getAceScore(currentScore);
+    }
+  }
+
+  get score() {
     if (['J', 'Q', 'K'].includes(this._rank)) {
       return 10;
     }
 
     if (this.isAce) {
-      if (!currentScore) {
-        return this.aceScore;
+      if (this.aceScore === 0) {
+        throw new Error('Ace score is not set');
       }
 
-      this.aceScore = this.getAceScore(currentScore);
       return this.aceScore;
     }
 
