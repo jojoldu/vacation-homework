@@ -89,9 +89,9 @@ export class BlackJackView implements GameView {
     console.log('게임을 종료합니다.');
   }
 
-  private getPlayerCards(cards: BlackJackCard[]) {
+  private getPlayerCards(cards: Card[]) {
     return cards
-      .map((card) => `${card.type}${card.rank}(${card.score()}점)`)
+      .map((card) => `${card.type}${card.rank}(${card.score}점)`)
       .join(', ');
   }
 }

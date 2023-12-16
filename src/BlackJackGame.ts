@@ -24,7 +24,10 @@ export class BlackJackGame {
 
   async start() {
     this.gameView.printGameRule();
-    this.deck.shuffle();
+
+    this.deck.init();
+    this.gamer.init();
+    this.dealer.init();
 
     Array(2)
       .fill(0)
@@ -39,6 +42,13 @@ export class BlackJackGame {
 
       if (this.dealer.score > 21) {
         this.judgeWinner();
+
+        if (await this.gameView.printRestartPrompt()) {
+          await this.restart();
+          return;
+        }
+
+        this.terminate();
 
         return;
       }
