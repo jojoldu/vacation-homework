@@ -13,5 +13,5 @@ void (async () => {
   const game = new Game();
 
   await startGame(reader, writer);
-  game.start();
+  await game.start();
 })();
