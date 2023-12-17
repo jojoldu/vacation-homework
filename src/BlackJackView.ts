@@ -66,6 +66,7 @@ export class BlackJackView implements GameView {
 
     if (winner === 'draw') {
       console.log('draw');
+      console.log('=======================================================');
       return;
     }
 
