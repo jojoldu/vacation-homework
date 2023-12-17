@@ -25,28 +25,11 @@ export class BlackJackDeck implements Deck {
    * 여기선 굳이 해줄 필요성을 못느껴서 해주지 않음. 이게 맞는 건지?
    */
   private generate() {
-    const cardTypes: CardType[] = ['heart', 'diamond', 'club', 'spade'];
-    const cardRanks: CardRank[] = [
-      '2',
-      '3',
-      '4',
-      '5',
-      '6',
-      '7',
-      '8',
-      '9',
-      '10',
-      'J',
-      'Q',
-      'K',
-      'A',
-    ];
-
-    cardTypes.forEach((cardType) => {
-      cardRanks.forEach((cardRank) => {
-        this.cards.push(new BlackJackCard(cardType, cardRank));
-      });
-    });
+    for (const type in CardType) {
+      for (const rank in CardRank) {
+        this.cards.push(new BlackJackCard(CardType[type], CardRank[rank]));
+      }
+    }
   }
 
   private shuffle() {
