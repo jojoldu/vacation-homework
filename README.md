@@ -32,9 +32,9 @@
 ### 필수 요구 사항
 
 - E2E 테스트 코드를 모두 통과해야 합니다.
+- - `jest.mock` 등 Mocking은 사용해선 안됩니다.
 - Lint, Prettier 를 따릅니다.
-- PR에서 소나큐브 Review에서 모두 통과 되어야 합니다.
-- `jest.mock` 등 Mocking은 사용해선 안됩니다.
+- PR에서 소나큐브 Review를 모두 통과 되어야 합니다.
 
 ### 선택 요구 사항
 
