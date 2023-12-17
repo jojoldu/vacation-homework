@@ -1,17 +1,21 @@
-import { closeQuestion, IReadLine, question } from '../utils/CommandLine';
+import { Reader } from '../utils/read/Reader';
+import { Writer } from '../utils/write/Writer';
+import { GameResult } from '../utils/GameResult';
 
-export async function init(readLine: IReadLine) {
-  const answer = await question('Enter your name: ');
+export async function init(reader: Reader, writer: Writer) {
+  const answer = await reader.question('Enter your player name: ');
 
-  console.log(`Hello, ${answer}!`);
-
-  closeQuestion();
+  writer.write(`Hello, ${answer}!`);
 }
 
-export function play(readLine: IReadLine) {
+export async function play(
+  reader: Reader,
+  writer: Writer,
+): Promise<GameResult> {
+  /**
+   * 게임 실행에 관한 모든 로직 구현
+   *
+   */
 
-}
-
-export function end(readLine: IReadLine) {
-
+  return GameResult.EMPTY; // 실제 결과로 교체해야합니다.
 }

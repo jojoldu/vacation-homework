@@ -1,13 +1,10 @@
-import { closeQuestion, question } from './utils/CommandLine';
+import { CommandLineReader } from './utils/read/CommandLineReader';
+import { ConsoleWriter } from './utils/write/ConsoleWriter';
+import { startGame } from './game/startGame';
 
 void (async () => {
-  const answer = await question('Enter your name: ');
+  const reader = new CommandLineReader();
+  const writer = new ConsoleWriter();
 
-  console.log(`Hello, ${answer}!`);
-
-  closeQuestion();
+  await startGame(reader, writer);
 })();
-
-
-
-
