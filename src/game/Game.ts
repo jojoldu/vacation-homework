@@ -8,7 +8,7 @@ export async function init(reader: Reader, writer: Writer) {
   writer.write(`Hello, ${answer}!`);
 }
 
-export async function play(
+export async function start(
   reader: Reader,
   writer: Writer,
 ): Promise<GameResult> {
