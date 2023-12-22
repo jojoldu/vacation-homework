@@ -1,7 +1,6 @@
 import { Reader } from '../utils/read/Reader';
 import { Writer } from '../utils/write/Writer';
 import { IDeck } from './card/IDeck';
-import { Card } from './card/Card';
 
 /**
  * 이 함수는 수정해선 안됩니다.
@@ -19,13 +18,5 @@ export async function init(reader: Reader, writer: Writer) {
  * - Deck: 이미 랜덤하게 섞인 카드들의 모음
  */
 export function createDeck(): IDeck {
-  return new (class implements IDeck {
-    drawCard(): Card | undefined {
-      return undefined;
-    }
-
-    remainCardCount(): number {
-      return 0;
-    }
-  })();
+  return null;
 }
