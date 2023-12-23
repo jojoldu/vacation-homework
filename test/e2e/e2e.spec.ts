@@ -1,86 +1,114 @@
-import { play } from '../../src/game/play';
+import { ScenarioDeck } from './utils/ScenarioDeck';
+import { Card } from '../../src/game/card/Card';
+import { Suit } from '../../src/game/card/Suit';
+import { Rank } from '../../src/game/card/Rank';
 import { ScenarioReader } from './utils/ScenarioReader';
 import { ScenarioWriter } from './utils/ScenarioWriter';
-import { Card, Rank, Suit } from '../../src/game/card/Card';
-import { ScenarioDeck } from './utils/ScenarioDeck';
-import { UserType } from '../../src/utils/result/UserType';
+import { UserType } from '../../src/utils/UserType';
+import { startGame } from '../../src/game/startGame';
+import * as cd from '../../src/game/deck/createDeck';
+
+jest.mock('../../src/game/deck/createDeck', () => {
+  return {
+    createDeck: jest.fn(),
+  };
+});
 
 describe('블랙잭 게임', () => {
-  describe('플레이어의 승리', () => {
-    it('플레이어가 딜러보다 총합이 크면', async () => {
-      const deck = new ScenarioDeck([
-        new Card(Suit.Clubs, Rank.Eight), // 딜러
-        new Card(Suit.Clubs, Rank.King), // 딜러
-        new Card(Suit.Diamonds, Rank.King), // 플레이어
-        new Card(Suit.Hearts, Rank.Queen), // 플레이어
-      ]);
+  let writer: ScenarioWriter;
 
-      const result = await play(
-        new ScenarioReader([]),
-        new ScenarioWriter(),
-        deck,
+  beforeEach(() => {
+    jest.clearAllMocks();
+    writer = new ScenarioWriter();
+  });
+
+  describe('플레이어가 승리하려면', () => {
+    it('플레이어 점수가 딜러보다 높아야 한다.', async () => {
+      const deck = cd.createDeck as jest.Mock;
+      deck.mockReturnValue(
+        new ScenarioDeck([
+          new Card(Suit.Diamonds, Rank.King), // 플레이어
+          new Card(Suit.Hearts, Rank.Queen), // 플레이어
+          new Card(Suit.Clubs, Rank.Seven), // 딜러
+          new Card(Suit.Clubs, Rank.King), // 딜러
+        ]),
       );
 
-      expect(result.winnerType()).toBe(UserType.PLAYER);
-      expect(result.winnerRating()).toBe(20);
+      await startGame(new ScenarioReader(['향로', 'no']), writer);
+
+      expect(writer.pop).toBe(
+        `패자는 ${UserType.DEALER} 이며 카드의 총합은 17 입니다.`,
+      );
+      expect(writer.pop).toBe(
+        `승자는 ${UserType.PLAYER} 이며 카드의 총합은 20 입니다.`,
+      );
     });
 
-    it('딜러가 21을 초과하면', async () => {
-      const deck = new ScenarioDeck([
-        new Card(Suit.Clubs, Rank.Eight), // 딜러
-        new Card(Suit.Clubs, Rank.Five), // 딜러
-        new Card(Suit.Clubs, Rank.King), // 딜러
-        new Card(Suit.Diamonds, Rank.Seven), // 플레이어
-        new Card(Suit.Hearts, Rank.Queen), // 플레이어
-      ]);
-
-      const result = await play(
-        new ScenarioReader([]),
-        new ScenarioWriter(),
-        deck,
+    it('딜러의 카드 총합이 21을 초과하면 된다.', async () => {
+      const deck = cd.createDeck as jest.Mock;
+      deck.mockReturnValue(
+        new ScenarioDeck([
+          new Card(Suit.Diamonds, Rank.Seven), // 플레이어
+          new Card(Suit.Hearts, Rank.Queen), // 플레이어
+          new Card(Suit.Clubs, Rank.Eight), // 딜러
+          new Card(Suit.Clubs, Rank.Five), // 딜러
+          new Card(Suit.Clubs, Rank.King), // 딜러
+        ]),
       );
 
-      expect(result.winnerType()).toBe(UserType.PLAYER);
-      expect(result.winnerRating()).toBe(17);
+      await startGame(new ScenarioReader(['향로', 'no']), writer);
+
+      expect(writer.pop).toBe(
+        `패자는 ${UserType.DEALER} 이며 카드의 총합은 0 입니다.`,
+      );
+      expect(writer.pop).toBe(
+        `승자는 ${UserType.PLAYER} 이며 카드의 총합은 17 입니다.`,
+      );
     });
   });
 
-  describe('딜러의 승리', () => {
-    it('딜러가 플레이어보다 총합이 크면', async () => {
-      const deck = new ScenarioDeck([
-        new Card(Suit.Diamonds, Rank.King), // 딜러
-        new Card(Suit.Hearts, Rank.Queen), // 딜러
-        new Card(Suit.Clubs, Rank.Eight), // 플레이어
-        new Card(Suit.Clubs, Rank.King), // 플레이어
-      ]);
-
-      const result = await play(
-        new ScenarioReader([]),
-        new ScenarioWriter(),
-        deck,
+  describe('딜러가 승리하려면', () => {
+    it('딜러 점수가 플레이어보다 높아야 한다.', async () => {
+      const deck = cd.createDeck as jest.Mock;
+      deck.mockReturnValue(
+        new ScenarioDeck([
+          new Card(Suit.Clubs, Rank.Seven), // 플레이어
+          new Card(Suit.Clubs, Rank.King), // 플레이어
+          new Card(Suit.Diamonds, Rank.King), // 딜러
+          new Card(Suit.Hearts, Rank.Queen),
+        ]),
       );
 
-      expect(result.winnerType()).toBe(UserType.PLAYER);
-      expect(result.winnerRating()).toBe(20);
+      await startGame(new ScenarioReader(['향로', 'no']), writer);
+
+      expect(writer.pop).toBe(
+        `패자는 ${UserType.PLAYER} 이며 카드의 총합은 17 입니다.`,
+      );
+      expect(writer.pop).toBe(
+        `승자는 ${UserType.DEALER} 이며 카드의 총합은 20 입니다.`,
+      );
     });
 
-    it('플레이어가 21을 초과하면', async () => {
-      const deck = new ScenarioDeck([
-        new Card(Suit.Clubs, Rank.Eight), // 딜러
-        new Card(Suit.Clubs, Rank.Five), // 딜러
-        new Card(Suit.Clubs, Rank.King), // 딜러
-        new Card(Suit.Diamonds, Rank.Seven), // 플레이어
-        new Card(Suit.Hearts, Rank.Queen), // 플레이어
-      ]);
-
-      const result = await play(
-        new ScenarioReader([]),
-        new ScenarioWriter(),
-        deck,
+    it('플레이어의 카드 총합이 21을 초과하면 된다.', async () => {
+      const deck = cd.createDeck as jest.Mock;
+      deck.mockReturnValue(
+        new ScenarioDeck([
+          new Card(Suit.Diamonds, Rank.Seven), // 플레이어
+          new Card(Suit.Hearts, Rank.Queen), // 플레이어
+          new Card(Suit.Clubs, Rank.Eight), // 딜러
+          new Card(Suit.Clubs, Rank.King), // 딜러
+          new Card(Suit.Hearts, Rank.Nine), // 플레이어
+        ]),
       );
 
-      expect(result.winnerType()).toBe(UserType.PLAYER);
-      expect(result.winnerRating()).toBe(17);
+      await startGame(new ScenarioReader(['향로', 'yes', 'no']), writer);
+
+      expect(writer.pop).toBe(
+        `패자는 ${UserType.PLAYER} 이며 카드의 총합은 0 입니다.`,
+      );
+      expect(writer.pop).toBe(
+        `승자는 ${UserType.DEALER} 이며 카드의 총합은 18 입니다.`,
+      );
     });
   });
 });

@@ -1,5 +1,5 @@
 import { Card } from '../../../src/game/card/Card';
-import { IDeck } from '../../../src/game/card/IDeck';
+import { IDeck } from '../../../src/game/deck/IDeck';
 
 export class ScenarioDeck implements IDeck {
   private readonly _cards: Card[];
@@ -8,7 +8,7 @@ export class ScenarioDeck implements IDeck {
   }
 
   drawCard(): Card {
-    return this._cards.pop();
+    return this._cards.shift();
   }
 
   remainCardCount(): number {

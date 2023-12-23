@@ -3,6 +3,7 @@ import { Writer } from '../../../src/utils/write/Writer';
 export class ScenarioWriter implements Writer {
   private readonly _messages = [];
   write(message: string): void {
+    console.log(message);
     this._messages.push(message);
   }
 

@@ -8,11 +8,9 @@
     "build": "tsc --build --clean & tsc --build ",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "node dist/app.js",
-    "test": "yarn test",
+    "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
-    "test:unit": "jest '.*.unit.spec.ts$'",
-    "test:e2e": "jest --config ./test/jest-e2e.json",
     "test:report": "jest --ci --reporters=default --reporters=jest-junit",
     "prepare": "husky install"
   },
@@ -68,7 +66,8 @@
     ],
     "coverageDirectory": "./coverage",
     "coverageReporters": [
-      "lcov"
+      "lcov",
+      "text-summary"
     ],
     "testEnvironment": "node",
     "roots": [

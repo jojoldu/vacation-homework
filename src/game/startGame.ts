@@ -1,19 +1,16 @@
 import { Reader } from '../utils/read/Reader';
 import { Writer } from '../utils/write/Writer';
-import { play } from './play';
-import { IGameResult } from '../utils/result/IGameResult';
-import { init } from './init';
+import { play } from './play/play';
+import { init } from './play/init';
+import { showResult } from './play/showResult';
 
 /**
  * 아래 함수는 수정해선 안됩니다.
  */
-export async function startGame(
-  reader: Reader,
-  writer: Writer,
-): Promise<IGameResult> {
+export async function startGame(reader: Reader, writer: Writer): Promise<void> {
   const deck = await init(reader, writer);
   const result = await play(reader, writer, deck);
-  reader.close();
+  showResult(writer, result);
 
-  return result;
+  reader.close();
 }

@@ -1,17 +1,19 @@
 import { Reader } from '../../../src/utils/read/Reader';
 
 export class ScenarioReader implements Reader {
-  private readonly scenario: string[] = [];
+  private readonly scenarios: string[] = [];
 
   constructor(scenario: string[]) {
-    this.scenario = scenario;
+    this.scenarios = scenario;
   }
 
   async question(query: string): Promise<string> {
-    return Promise.resolve(this.scenario.pop());
+    const scenario = this.scenarios.shift();
+    console.log(`${query} ${scenario}`);
+    return Promise.resolve(scenario);
   }
   close(): void {
-    if (this.scenario.length !== 0) {
+    if (this.scenarios.length !== 0) {
       throw new Error('아직 종료되지 않은 시나리오가 있습니다.');
     }
   }
