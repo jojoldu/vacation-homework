@@ -1,0 +1,45 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - "**"
+
+jobs:
+  docker:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+
+    steps:
+      # 해당 저장소의 코드를 가져옵니다.
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # Node 18 버전을 사용합니다.
+      - name: Install node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18.x
+          cache: 'yarn'
+
+      # 설치된 yarn을 통해 패키지를 설치합니다.
+      - name: Install dependencies
+        run: yarn install
+
+      # 테스트 수행과 그 테스트 결과를 xml파일로 생성합니다.
+      - name: Run tests
+        run: yarn test:report
+
+      # 테스트 결과를 담은 xml 파일을 레포트로 변환합니다.
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: success() || failure()    # run this step even if previous step failed
+        with:
+          name: test-results
+          path: junit.xml
+          fail-on-error: 'false'
+          reporter: jest-junit        # Format of test results
+          token: ${{ secrets.GITHUB_TOKEN }}

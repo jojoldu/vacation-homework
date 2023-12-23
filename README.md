@@ -51,12 +51,15 @@
 #### BE 필수 요구 사항
 
 - **Class는 3개 이하로 구현**해야 합니다.
-- `Interface`, `Type`, `Function` 을 적극적으로 사용합니다.
+- `Interface`, `Type`, `Enum`, `Function` 을 적극적으로 사용합니다.
 
 #### FE 필수 요구 사항
 
-- 모든 코드는 **Class로 구현**해야 합니다.
-- 함수만 존재해선 안됩니다.
+- 모든 기능은 **Class 내부에** 존재해야 합니다.
+  - 즉, 함수 (`Function`)는 없으며 메소드 (`Method`) 만 존재해야합니다.
+  - [Methods and Functions](https://www.codecademy.com/article/fwd-js-methods-functions)
+- 그 외 `Interface`, `Type`, `Enum` 등은 적극적으로 사용하셔도 됩니다.
+  - `Function` 의 사용만 금지 됩니다.
 
 ### 선택 요구 사항
 
