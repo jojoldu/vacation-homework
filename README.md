@@ -125,6 +125,9 @@ Hello, Player: 향로!
 
 ```
 
+PR을 보내면 아래와 같이 Github Action 에서 테스트 결과를 확인할 수 있다.
+
+![test-result](./images/test-result.png)
 
 ## 요구사항
 
